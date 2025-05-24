@@ -14,12 +14,18 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/notes', noteRoutes);
 
+// Define the port to listen on. Use process.env.PORT for Render, fallback to 5000 for local development.
+const PORT = process.env.PORT || 5000;
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ Connected to MongoDB');
-    app.listen(5000, () => console.log('🚀 Server running on http://localhost:5000'));
+    // Start the server only after successful database connection
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   })
   .catch((err) => {
     console.error('❌ MongoDB connection error:', err);
+    // It's good practice to exit if the database connection fails on startup
+    // process.exit(1); // Uncomment this line if you want the app to exit on DB connection failure
   });
