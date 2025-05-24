@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard – Daily Learning Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-gray-900 text-white font-sans">
+
+<nav class="flex justify-between items-center px-6 py-4 bg-white/10 backdrop-blur-lg shadow-lg sticky top-0 z-50 border-b border-white/20">
+  <h1 class="text-xl font-bold flex items-center gap-2 text-white">
+    <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="32px" fill="#e3e3e3">
+      <path d="M491-339q70 0 119-45t49-109q0-57-36.5-96.5T534-629q-47 0-79.5 30T422-525q0 19 7.5 37t21.5 33l57-57q-3-2-4.5-5t-1.5-7q0-11 9-17.5t23-6.5q20 0 33 16.5t13 39.5q0 31-25.5 52.5T492-418q-47 0-79.5-38T380-549q0-29 11-55.5t31-46.5l-57-57q-32 31-49 72t-17 86q0 88 56 149.5T491-339ZM240-80v-172q-57-52-88.5-121.5T120-520q0-150 105-255t255-105q125 0 221.5 73.5T827-615l52 205q5 19-7 34.5T840-360h-80v120q0 33-23.5 56.5T680-160h-80v80h-80v-160h160v-200h108l-38-155q-23-91-98-148t-172-57q-116 0-198 81t-82 197q0 60 24.5 114t69.5 96l26 24v208h-80Zm254-360Z"/>
+    </svg>
+    <span>Learning Tracker</span>
+  </h1>
+  <button class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-bold" style="background-color: rgba(255, 255, 255, 0.1); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.2);">Logout</button>
+</nav>
+
+<main class="flex px-4 md:px-10 py-6 flex-col space-y-8">
+  <section class="flex justify-between items-center flex-wrap gap-4">
+    <div>
+      <h2 class="text-2xl font-bold">Welcome, Naveen 👋</h2>
+      <p class="text-sm text-gray-300">Track your learning everyday</p>
+    </div>
+    <button id="addNoteBtn" class="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded font-semibold">+ Add Note</button>
+  </section>
+
+  <div class="overflow-y-auto pr-1 custom-scrollbar" style="max-height: calc(100vh - 200px);">
+    <div id="notesContainer" class="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div class="bg-white/10 p-4 rounded-lg shadow-lg border border-white/20">
+        <h3 class="font-semibold text-lg mb-2">JavaScript Promises</h3>
+        <p class="text-gray-300 text-sm">Learned how async/await simplifies promise chains and avoids callback hell.</p>
+        <p class="text-xs mt-2 text-right text-gray-400"> <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="200 -860 760 960" width="26px" fill="#e3e3e3" class="mr-1">
+          <path d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z"/></svg> May 14, 2025</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="noteModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+  <div class="bg-white/10 p-6 rounded-xl w-full max-w-md shadow-2xl border border-white/20">
+    <h3 class="text-lg font-bold mb-4">Add New Learning Note</h3>
+    <input id="noteTitle" type="text" placeholder="Title" class="w-full mb-3 px-4 py-2 rounded bg-white/20 placeholder-gray-300 text-white focus:outline-none" />
+    <textarea id="noteDesc" placeholder="What did you learn?" class="w-full mb-3 px-4 py-2 rounded bg-white/20 placeholder-gray-300 text-white focus:outline-none" rows="4"></textarea>
+    <div class="flex justify-end space-x-3">
+      <button id="closeModal" class="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded">Cancel</button>
+      <button id="saveNote" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded font-semibold">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="dashboard.js"></script>
+
+<footer class="bg-white/10 text-center text-sm py-4 border-t border-white/20 mt-10">
+  &copy; <span id="currentYear"></span> Learning Tracker. All rights reserved.
+</footer>
+
+<script>
+  document.getElementById('currentYear').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>

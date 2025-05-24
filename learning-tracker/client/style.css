@@ -1,0 +1,142 @@
+html body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+svg {
+  display: inline-block;
+}
+
+/* Custom Scrollbar for Notes */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
+}
+
+footer {
+  
+}
+
+/* Base styles (Mobile First) are already handled by Tailwind in HTML */
+
+/* Tablets (min-width: 640px) */
+@media (min-width: 640px) {
+  .modal {
+    width: 90%;
+  }
+
+  .note-card {
+    width: 48%;
+  }
+
+  .note-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
+/* Medium devices (min-width: 768px) */
+@media (min-width: 768px) {
+  .modal {
+    width: 70%;
+  }
+
+  .note-card {
+    width: 45%;
+  }
+
+  .header-title {
+    font-size: 1.75rem;
+  }
+
+  .note-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+/* Large devices (min-width: 1024px) */
+@media (min-width: 1024px) {
+  .modal {
+    width: 50%;
+  }
+
+  .note-card {
+    width: 30%;
+  }
+
+  .header-title {
+    font-size: 2rem;
+  }
+
+  .note-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+/* Extra large screens (min-width: 1280px) */
+@media (min-width: 1280px) {
+  .modal {
+    width: 40%;
+  }
+
+  .note-card {
+    width: 25%;
+  }
+
+  .note-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Base styles for footer are mobile-first */
+
+/* Tablet and above (min-width: 640px) */
+@media (min-width: 640px) {
+  .footer {
+    padding: 1rem 2rem;
+    text-align: left;
+    font-size: 0.95rem;
+  }
+}
+
+/* Medium devices (min-width: 768px) */
+@media (min-width: 768px) {
+  .footer {
+    padding: 1.5rem 3rem;
+    font-size: 1rem;
+  }
+}
+
+/* Large devices (min-width: 1024px) */
+@media (min-width: 1024px) {
+  .footer {
+    padding: 2rem 4rem;
+    font-size: 1.1rem;
+  }
+}
