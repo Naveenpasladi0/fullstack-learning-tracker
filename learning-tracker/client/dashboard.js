@@ -1,4 +1,5 @@
 const token = localStorage.getItem('token');
+const BASE_URL = 'https://fullstack-learning-tracker.onrender.com';
 
 if (!token) {
   window.location.href = 'index.html';
@@ -136,7 +137,7 @@ async function loadNotes() {
           }
 
           try {
-            const updateRes = await fetch(`http://localhost:5000/api/notes/${note._id}`, {
+            const updateRes = await fetch(`${BASE_URL}/api/notes/${note._id}`, {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json',
@@ -164,7 +165,7 @@ async function loadNotes() {
           if (!confirmDelete) return;
 
           try {
-            const deleteRes = await fetch(`http://localhost:5000/api/notes/${note._id}`, {
+            const deleteRes = await fetch(`${BASE_URL}/api/notes/${note._id}`, {
               method: 'DELETE',
               headers: {
                 'Authorization': `Bearer ${token}`
@@ -194,7 +195,7 @@ async function loadNotes() {
         noteEl.querySelector('.pin-btn').addEventListener('click', async (e) => {
           e.stopPropagation();
           try {
-            const res = await fetch(`http://localhost:5000/api/notes/${note._id}/pin`, {
+            const res = await fetch(`${BASE_URL}/api/notes/${note._id}/pin`, {
               method: 'PATCH',
               headers: {
                 'Authorization': `Bearer ${token}`
@@ -232,7 +233,7 @@ async function loadNotes() {
         noteEl.querySelector('.pin-display-btn').addEventListener('click', async (e) => {
           e.stopPropagation(); // Prevent the note from entering edit mode
           try {
-            const res = await fetch(`http://localhost:5000/api/notes/${note._id}/pin`, {
+            const res = await fetch(`${BASE_URL}/api/notes/${note._id}/pin`, {
               method: 'PATCH',
               headers: {
                 'Authorization': `Bearer ${token}`
