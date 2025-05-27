@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
+const cors = require('cors');
 
 const authRoutes = require('./routes/authRoutes');
 const noteRoutes = require('./routes/noteRoutes');
@@ -13,6 +14,12 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/notes', noteRoutes);
+
+// Allow CORS from your frontend URL, or use '*' during dev (not recommended for production)
+app.use(cors({
+  origin: 'http://localhost:3000', // Replace with your frontend URL if hosted elsewhere
+  credentials: true, // if you use cookies or auth headers that require credentials
+}));
 
 // Define the port to listen on. Use process.env.PORT for Render, fallback to 5000 for local development.
 const PORT = process.env.PORT || 5000;

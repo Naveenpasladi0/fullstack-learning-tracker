@@ -64,8 +64,16 @@ let currentlyEditingId = null;
 
 async function loadNotes() {
   try {
-    const res = await fetch('http://localhost:5000/api/notes', {
-      headers: { 'Authorization': `Bearer ${token}` }
+    fetch('https://fullstack-learning-tracker.onrender.com/api/notes', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`, // Pass token in Authorization header
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => res.json())
+    .then(notes => {
+      // Render notes on UI
     });
 
     if (res.status === 401 || res.status === 403) {
