@@ -16,7 +16,7 @@ app.use('/api/notes', noteRoutes);
 
 // Allow CORS from your frontend URL, or use '*' during dev (not recommended for production)
 app.use(cors({
-  origin: 'http://localhost:3000', // Replace with your frontend URL if hosted elsewhere
+  origin: 'https://learning-tracker-frontend-static.onrender.com', // Replace with your frontend URL if hosted elsewhere
   credentials: true, // if you use cookies or auth headers that require credentials
 }));
 

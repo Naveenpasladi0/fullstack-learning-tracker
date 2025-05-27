@@ -64,16 +64,12 @@ let currentlyEditingId = null;
 
 async function loadNotes() {
   try {
-    fetch('https://fullstack-learning-tracker.onrender.com/api/notes', {
+    const res = await fetch('https://fullstack-learning-tracker.onrender.com/api/notes', {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`, // Pass token in Authorization header
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       }
-    })
-    .then(res => res.json())
-    .then(notes => {
-      // Render notes on UI
     });
 
     if (res.status === 401 || res.status === 403) {
@@ -81,12 +77,12 @@ async function loadNotes() {
       return window.location.href = 'index.html';
     }
 
-    if (!res.ok) { // Handle non-2xx responses
+    if (!res.ok) {
       const errorData = await res.json();
       throw new Error(errorData.message || 'Failed to load notes');
     }
 
-    let notes = await res.json();
+    const notes = await res.json();
 
     // Sort by pinned first, then by date (most recent first)
     notes.sort((a, b) => {
@@ -98,9 +94,14 @@ async function loadNotes() {
     notesContainer.innerHTML = ''; // Clear existing notes before adding new ones
 
     notes.forEach(note => {
-      const noteEl = document.createElement('div');
-      noteEl.className = 'bg-white/10 p-4 rounded-lg shadow-lg border border-white/20 cursor-pointer'; // Keep cursor-pointer for full note edit
-      noteEl.setAttribute('data-id', note._id);
+      // Your rendering logic here (already correct in your code)
+    });
+
+  } catch (err) {
+    console.error('Error loading notes:', err);
+    alert('Failed to load notes: ' + err.message);
+  }
+}
 
       // Add 'pinned-note' class if the note is pinned for optional styling
       if (note.pinned) {
@@ -255,14 +256,6 @@ async function loadNotes() {
           loadNotes();
         });
       }
-
-      notesContainer.appendChild(noteEl);
-    });
-  } catch (err) {
-    console.error('Failed to load notes:', err);
-    alert('Something went wrong while loading your notes: ' + err.message);
-  }
-}
 
 saveNote.addEventListener('click', async () => {
   const title = noteTitle.value.trim();
