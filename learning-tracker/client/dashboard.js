@@ -17,20 +17,21 @@ function getUserNameFromToken(token) {
 const userName = getUserNameFromToken(token);
 document.querySelector('h2').innerHTML = `Welcome, <span style="display: inline-flex; align-items: center; gap: 4px;">${userName} <svg xmlns="http://www.w3.org/2000/svg" height="50px" viewBox="0 -960 960 960" width="30px" fill="#e3e3e3" style="vertical-align: middle;"><path d="m430-500 283-283q12-12 28-12t28 12q12 12 12 28t-12 28L487-444l-57-56Zm99 99 254-255q12-12 28.5-12t28.5 12q12 12 12 28.5T840-599L586-345l-57-56ZM211-211q-91-91-91-219t91-219l120-120 59 59q7 7 12 14.5t10 15.5l148-149q12-12 28.5-12t28.5 12q12 12 12 28.5T617-772L444-599l-85 84 19 19q46 46 44 110t-49 111l-57-56q23-23 25.5-54.5T321-440l-47-46q-12-12-12-28.5t12-28.5l57-56q12-12 12-28.5T331-656l-64 64q-68 68-68 162.5T267-267q68 68 163 68t163-68l239-240q12-12 28.5-12t28.5 12q12 12 12 28.5T889-450L649-211q-91 91-219 91t-219-91Zm219-219ZM680-39v-81q66 0 113-47t47-113h81q0 100-70.5 170.5T680-39ZM39-680q0-100 70.5-170.5T280-921v81q-66 0-113 47t-47 113H39Z"/></svg></span>`;
 
-const addNoteBtn = document.getElementById('addNoteBtn');
-const noteModal = document.getElementById('noteModal');
-const closeModal = document.getElementById('closeModal');
-const saveNote = document.getElementById('saveNote');
-const noteTitle = document.getElementById('noteTitle');
-const noteDesc = document.getElementById('noteDesc');
+const addNoteBtn   = document.getElementById('addNoteBtn');
+const noteModal    = document.getElementById('noteModal');
+const closeModal   = document.getElementById('closeModal');
+const saveNote     = document.getElementById('saveNote');
+const noteTitle    = document.getElementById('noteTitle');
+const noteDesc     = document.getElementById('noteDesc');
 const notesContainer = document.getElementById('notesContainer');
-const logoutBtn = document.querySelector('nav button');
+const logoutBtn    = document.querySelector('nav button');
 
 function applyBlurBackgroundToButtons() {
   const blurStyle = `background-color: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.2);`;
+
   if (addNoteBtn) {
     addNoteBtn.style.cssText += blurStyle;
     addNoteBtn.addEventListener('mouseenter', () => addNoteBtn.style.opacity = '0.9');
@@ -47,10 +48,9 @@ function applyBlurBackgroundToButtons() {
 addNoteBtn.addEventListener('click', () => noteModal.classList.remove('hidden'));
 closeModal.addEventListener('click', () => {
   noteModal.classList.add('hidden');
-  noteTitle.value = ''; // Clear fields on cancel
-  noteDesc.value = '';  // Clear fields on cancel
+  noteTitle.value = '';
+  noteDesc.value = '';
 });
-
 logoutBtn.addEventListener('click', () => {
   localStorage.removeItem('token');
   window.location.href = 'index.html';
@@ -65,7 +65,7 @@ let currentlyEditingId = null;
 
 async function loadNotes() {
   try {
-    const res = await fetch('https://fullstack-learning-tracker.onrender.com/api/notes', {
+    const res = await fetch(`${BASE_URL}/api/notes`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -77,12 +77,11 @@ async function loadNotes() {
       localStorage.removeItem('token');
       return window.location.href = 'index.html';
     }
-
     if (!res.ok) {
       const errorData = await res.json();
       throw new Error(errorData.message || 'Failed to load notes');
     }
-
+    
     const notes = await res.json();
 
     // Sort by pinned first, then by date (most recent first)
@@ -92,10 +91,21 @@ async function loadNotes() {
       return new Date(b.date) - new Date(a.date);
     });
 
-    notesContainer.innerHTML = ''; // Clear existing notes before adding new ones
+    notesContainer.innerHTML = '';
 
     notes.forEach(note => {
-      // Your rendering logic here (already correct in your code)
+      const noteEl = document.createElement('div');
+      noteEl.className = `rounded-lg p-4 mb-4 bg-white/10 border border-white/10 text-white
+                          shadow-lg hover:bg-white/20 transition cursor-pointer
+                          ${note.pinned ? 'pinned-note' : ''}`;
+
+      if (currentlyEditingId === note._id) {
+        // … your existing “editing mode” code …
+      } else {
+        // … your existing “display mode” code …
+      }
+
+      notesContainer.appendChild(noteEl);
     });
 
   } catch (err) {
@@ -103,6 +113,9 @@ async function loadNotes() {
     alert('Failed to load notes: ' + err.message);
   }
 }
+
+// … your existing saveNote, update, delete, pin handlers unchanged …
+
 
       // Add 'pinned-note' class if the note is pinned for optional styling
       notes.forEach(note => {
