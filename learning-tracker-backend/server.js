@@ -8,31 +8,22 @@ const noteRoutes = require('./routes/noteRoutes');
 
 const app = express();
 
-// ✅ Set up proper CORS before any routes or middleware
-const allowedOrigins = ['https://learning-tracker-frontend-static.onrender.com'];
-
+// ✅ Use CORS BEFORE defining routes — apply to all incoming requests
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
+  origin: 'https://learning-tracker-frontend-static.onrender.com', // Your frontend domain
+  credentials: true
 }));
 
-// Middleware
 app.use(express.json());
 
-// Routes
+// ✅ Define routes AFTER CORS is applied
 app.use('/api/auth', authRoutes);
 app.use('/api/notes', noteRoutes);
 
-// Port setup
+// ✅ PORT setup
 const PORT = process.env.PORT || 5000;
 
-// MongoDB connection and server start
+// ✅ MongoDB connection and server start
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ Connected to MongoDB');
