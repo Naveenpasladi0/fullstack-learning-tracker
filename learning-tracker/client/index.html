@@ -69,70 +69,67 @@
     });
   
     async function loginUser(e) {
-      e.preventDefault();
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-  
-      try {
-        const res = await fetch('https://fullstack-learning-tracker.onrender.com/api', {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+
+    try {
+      const res = await fetch(
+        'https://fullstack-learning-tracker.onrender.com/api/auth/login',
+        {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.token) {
-            // Save token to localStorage/sessionStorage
-            localStorage.setItem('token', data.token);
-          } else {
-            // Handle login error
-            }
-          });
-  
-        const data = await res.json();
-  
-        if (res.ok && data.token) {
-          localStorage.setItem('token', data.token);
-          window.location.href = 'dashboard.html';
-        } else {
-          alert(data.message || 'Login failed. Please check your credentials.');
+          body: JSON.stringify({ email, password })
         }
-      } catch (err) {
-        alert('Server error. Please try again later.');
-      }
-    }
-  
-    async function signupUser(e) {
-      e.preventDefault();
-      const name = document.getElementById('signup-name').value;
-      const email = document.getElementById('signup-email').value;
-      const password = document.getElementById('signup-password').value;
+      );
 
-      try {
-        const res = await fetch('https://fullstack-learning-tracker.onrender.com/api', {
+      const data = await res.json();
+
+      if (res.ok && data.token) {
+        localStorage.setItem('token', data.token);
+        window.location.href = 'dashboard.html';
+      } else {
+        alert(data.message || 'Login failed. Please check your credentials.');
+      }
+    } catch (err) {
+      alert('Server error. Please try again later.');
+    }
+  }
+  
+  async function signupUser(e) {
+    e.preventDefault();
+    const name = document.getElementById('signup-name').value;
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+
+    try {
+      const res = await fetch(
+        'https://fullstack-learning-tracker.onrender.com/api/auth/signup',
+        {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, password })
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          alert('Signup successful! Please log in.');
-          document.getElementById('signup-form').reset();
-          signupForm.classList.add('hidden');
-          loginForm.classList.remove('hidden');
-          showLogin.classList.replace('bg-gray-700', 'bg-indigo-600');
-          showSignup.classList.replace('bg-purple-600', 'bg-gray-700');
-          mainHeading.textContent = 'Welcome Back!';
-        } else {
-          alert(data.message || 'Signup failed. Try another email.');
         }
-      } catch (err) {
-        alert('Server error. Please try again later.');
-        console.error(err);
+      );
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert('Signup successful! Please log in.');
+        signupForm.reset();
+        signupForm.classList.add('hidden');
+        loginForm.classList.remove('hidden');
+        showLogin.classList.replace('bg-gray-700', 'bg-indigo-600');
+        showSignup.classList.replace('bg-purple-600', 'bg-gray-700');
+        mainHeading.textContent = 'Welcome Back!';
+      } else {
+        alert(data.message || 'Signup failed. Try another email.');
       }
+    } catch (err) {
+      alert('Server error. Please try again later.');
+      console.error(err);
     }
+  }
   </script>
 
   <style>
