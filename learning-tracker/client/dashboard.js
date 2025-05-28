@@ -74,21 +74,45 @@ async function loadNotes() {
       }
     });
 
+    console.log('API Response Status for GET /api/notes:', res.status); // Log status
     if (res.status === 401 || res.status === 403) {
       localStorage.removeItem('token');
       return window.location.href = 'index.html';
     }
 
     const notes = await res.json();
+    console.log('Notes fetched from API:', notes); // IMPORTANT: Check this log for the actual data structure
+
+    // Ensure 'notes' is an array before sorting and iterating
+    if (!Array.isArray(notes)) {
+      console.error('API did not return an array for notes:', notes);
+      alert('Failed to load notes: Unexpected data format from server.');
+      return; // Stop execution if notes is not an array
+    }
+
     notes.sort((a, b) => {
-      if (a.pinned && !b.pinned) return -1;
-      if (!a.pinned && b.pinned) return 1;
-      return new Date(b.date) - new Date(a.date);
+      // Add checks for pinned and date properties to avoid errors during sorting
+      const aPinned = a.pinned || false;
+      const bPinned = b.pinned || false;
+      const aDate = new Date(a.date || 0); // Use a default date if 'date' is missing
+      const bDate = new Date(b.date || 0);
+
+      if (aPinned && !bPinned) return -1;
+      if (!aPinned && bPinned) return 1;
+      return bDate.getTime() - aDate.getTime(); // Compare timestamps
     });
 
     notesContainer.innerHTML = ''; // Clear existing notes
 
     notes.forEach(note => {
+      // Defensive checks for 'note' properties before rendering
+      if (!note || typeof note !== 'object' || !note._id || !note.title || !note.desc || note.pinned === undefined || !note.date) {
+        console.warn('Skipping malformed note object:', note);
+        return; // Skip this iteration if note is invalid
+      }
+
+      console.log('Rendering note:', note); // Log each note being processed
+
       const noteEl = document.createElement('div');
       noteEl.className = `rounded-lg p-4 bg-white/10 border border-white/20 shadow-lg text-white transition-all
                           ${note.pinned ? 'ring-2 ring-yellow-400' : ''}`;
@@ -203,6 +227,7 @@ async function loadNotes() {
             </svg>${new Date(note.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
           </p>
         `;
+        
         // Attach event listener for the new pin icon in display mode
         noteEl.querySelector('.pin-display-btn').addEventListener('click', async (e) => {
           e.stopPropagation(); // Prevent the note from entering edit mode
