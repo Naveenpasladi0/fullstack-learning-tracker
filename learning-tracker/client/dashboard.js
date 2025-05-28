@@ -266,7 +266,17 @@ async function loadNotes() {
 saveNote.addEventListener('click', async () => {
   const title = noteTitle.value.trim();
   const desc = noteDesc.value.trim();
-  if (!title || !desc) return alert('Please fill in all fields.');
+
+  // --- ADDED CONSOLE LOGS HERE ---
+  console.log('Attempting to save note with:');
+  console.log('Title:', title);
+  console.log('Description:', desc);
+  // --- END ADDED CONSOLE LOGS ---
+
+  if (!title || !desc) {
+    alert('Please fill in all fields.');
+    return;
+  }
 
   try {
     const res = await fetch(`${apiUrl}/notes`, {
@@ -275,7 +285,7 @@ saveNote.addEventListener('click', async () => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({ title, content: desc }) // Ensure backend expects 'content' or change to 'desc'
+      body: JSON.stringify({ title, desc })
     });
 
     if (res.status === 401 || res.status === 403) {
