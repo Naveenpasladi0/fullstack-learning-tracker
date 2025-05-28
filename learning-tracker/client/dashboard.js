@@ -1,7 +1,6 @@
 const token = localStorage.getItem('token');
 const BASE_URL = 'https://fullstack-learning-tracker.onrender.com';
-const apiUrl = "https://fullstack-learning-tracker.onrender.com/api";
-
+const apiUrl = "https://fullstack-learning-tracker.onrender.com/api"; // This seems to be the same as BASE_URL + /api, consider consolidating
 
 if (!token) {
   window.location.href = 'index.html';
@@ -39,7 +38,6 @@ function applyBlurBackgroundToButtons() {
     addNoteBtn.addEventListener('mouseenter', () => addNoteBtn.style.opacity = '0.9');
     addNoteBtn.addEventListener('mouseleave', () => addNoteBtn.style.opacity = '1');
   }
-
   if (logoutBtn) {
     logoutBtn.style.cssText += blurStyle;
     logoutBtn.addEventListener('mouseenter', () => logoutBtn.style.opacity = '0.9');
@@ -53,6 +51,7 @@ closeModal.addEventListener('click', () => {
   noteTitle.value = '';
   noteDesc.value = '';
 });
+
 logoutBtn.addEventListener('click', () => {
   localStorage.removeItem('token');
   window.location.href = 'index.html';
@@ -81,112 +80,18 @@ async function loadNotes() {
     }
 
     const notes = await res.json();
-
     notes.sort((a, b) => {
       if (a.pinned && !b.pinned) return -1;
       if (!a.pinned && b.pinned) return 1;
       return new Date(b.date) - new Date(a.date);
     });
 
-    notesContainer.innerHTML = '';
+    notesContainer.innerHTML = ''; // Clear existing notes
 
     notes.forEach(note => {
       const noteEl = document.createElement('div');
       noteEl.className = `rounded-lg p-4 bg-white/10 border border-white/20 shadow-lg text-white transition-all
                           ${note.pinned ? 'ring-2 ring-yellow-400' : ''}`;
-
-      if (currentlyEditingId === note._id) {
-        // Edit Mode
-        noteEl.innerHTML = `
-          <input type="text" class="title-input w-full mb-2 px-2 py-1 rounded bg-white/20 text-white placeholder:text-white/80" value="${note.title}" />
-          <textarea class="desc-input w-full mb-2 px-2 py-1 rounded bg-white/20 text-white placeholder:text-white/80" rows="3">${note.desc}</textarea>
-          <div class="flex justify-end space-x-2">
-            <button class="save-btn bg-green-600 hover:bg-green-700 px-3 py-1 rounded">Save</button>
-            <button class="cancel-btn bg-gray-500 hover:bg-gray-600 px-3 py-1 rounded">Cancel</button>
-          </div>
-        `;
-
-        noteEl.querySelector('.save-btn').addEventListener('click', async () => {
-          const updatedTitle = noteEl.querySelector('.title-input').value.trim();
-          const updatedDesc = noteEl.querySelector('.desc-input').value.trim();
-
-          if (!updatedTitle || !updatedDesc) {
-            return alert('Both title and description are required.');
-          }
-
-          await fetch(`${BASE_URL}/api/notes/${note._id}`, {
-            method: 'PUT',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ title: updatedTitle, desc: updatedDesc })
-          });
-
-          currentlyEditingId = null;
-          loadNotes();
-        });
-
-        noteEl.querySelector('.cancel-btn').addEventListener('click', () => {
-          currentlyEditingId = null;
-          loadNotes();
-        });
-      } else {
-        // Display Mode
-        noteEl.innerHTML = `
-          <div class="flex justify-between items-start">
-            <h3 class="font-semibold text-lg">${note.title}</h3>
-            <button class="pin-btn text-yellow-400 hover:text-yellow-300" title="${note.pinned ? 'Unpin' : 'Pin'}">
-              ${note.pinned ? '📌' : '📍'}
-            </button>
-          </div>
-          <p class="text-sm text-gray-300 mt-2">${note.desc}</p>
-          <p class="text-xs mt-3 text-right text-gray-400">${new Date(note.date).toDateString()}</p>
-          <div class="mt-4 flex justify-end space-x-2">
-            <button class="edit-btn bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm">Edit</button>
-            <button class="delete-btn bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm">Delete</button>
-          </div>
-        `;
-
-        // Edit
-        noteEl.querySelector('.edit-btn').addEventListener('click', () => {
-          currentlyEditingId = note._id;
-          loadNotes();
-        });
-
-        // Delete
-        noteEl.querySelector('.delete-btn').addEventListener('click', async () => {
-          const confirmed = confirm('Are you sure you want to delete this note?');
-          if (confirmed) {
-            await fetch(`${BASE_URL}/api/notes/${note._id}`, {
-              method: 'DELETE',
-              headers: { 'Authorization': `Bearer ${token}` }
-            });
-            loadNotes();
-          }
-        });
-
-        // Pin / Unpin
-        noteEl.querySelector('.pin-btn').addEventListener('click', async () => {
-          await fetch(`${BASE_URL}/api/notes/${note._id}`, {
-            method: 'PATCH',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ pinned: !note.pinned })
-          });
-          loadNotes();
-        });
-      }
-
-      notesContainer.appendChild(noteEl);
-    });
-  } catch (err) {
-    console.error('Error loading notes:', err);
-    alert('Failed to load notes: ' + err.message);
-  }
-}
 
       if (currentlyEditingId === note._id) {
         // Render in editing mode
@@ -209,12 +114,10 @@ async function loadNotes() {
           e.stopPropagation();
           const updatedTitle = titleInput.value.trim();
           const updatedDesc = descInput.value.trim();
-
           if (!updatedTitle || !updatedDesc) {
             alert('Both title and description are required.');
             return;
           }
-
           try {
             const updateRes = await fetch(`${BASE_URL}/api/notes/${note._id}`, {
               method: 'PUT',
@@ -224,12 +127,10 @@ async function loadNotes() {
               },
               body: JSON.stringify({ title: updatedTitle, desc: updatedDesc })
             });
-
             if (!updateRes.ok) {
               const errorData = await updateRes.json();
               throw new Error(errorData.message || 'Update failed');
             }
-
             currentlyEditingId = null;
             loadNotes();
           } catch (err) {
@@ -242,7 +143,6 @@ async function loadNotes() {
           e.stopPropagation();
           const confirmDelete = confirm('Are you sure you want to delete this note?');
           if (!confirmDelete) return;
-
           try {
             const deleteRes = await fetch(`${BASE_URL}/api/notes/${note._id}`, {
               method: 'DELETE',
@@ -250,12 +150,10 @@ async function loadNotes() {
                 'Authorization': `Bearer ${token}`
               }
             });
-
             if (!deleteRes.ok) {
               const errorData = await deleteRes.json();
               throw new Error(errorData.message || 'Delete failed');
             }
-
             currentlyEditingId = null;
             loadNotes();
           } catch (err) {
@@ -270,7 +168,6 @@ async function loadNotes() {
           loadNotes();
         });
 
-        // Pin button for editing mode (already existing, but ensure it works)
         noteEl.querySelector('.pin-btn').addEventListener('click', async (e) => {
           e.stopPropagation();
           try {
@@ -280,7 +177,6 @@ async function loadNotes() {
                 'Authorization': `Bearer ${token}`
               }
             });
-
             if (!res.ok) {
               const errorData = await res.json();
               throw new Error(errorData.message || 'Pin toggle failed');
@@ -291,7 +187,6 @@ async function loadNotes() {
             alert('Failed to pin/unpin note: ' + err.message);
           }
         });
-
       } else {
         // Render in display mode
         noteEl.innerHTML = `
@@ -318,7 +213,6 @@ async function loadNotes() {
                 'Authorization': `Bearer ${token}`
               }
             });
-
             if (!res.ok) {
               const errorData = await res.json();
               throw new Error(errorData.message || 'Pin toggle failed');
@@ -329,47 +223,53 @@ async function loadNotes() {
             alert('Failed to pin/unpin note: ' + err.message);
           }
         });
-
-        // Existing click listener for editing the note
+        // Existing click listener for entering editing mode
         noteEl.addEventListener('click', () => {
           currentlyEditingId = note._id;
-          loadNotes();
+          loadNotes(); // Re-render to show in edit mode
         });
       }
+      notesContainer.appendChild(noteEl);
+    });
+  } catch (err) {
+    console.error('Error loading notes:', err);
+    alert('Failed to load notes: ' + err.message);
+  }
+}
 
-      saveNote.addEventListener('click', async () => {
-        const title = noteTitle.value.trim();
-        const desc = noteDesc.value.trim();
-        if (!title || !desc) return alert('Please fill in all fields.');
-      
-        try {
-          const res = await fetch(`${apiUrl}/notes`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ title, content: desc }) // Use 'content' if your backend expects it
-          });
-      
-          if (res.status === 401 || res.status === 403) {
-            localStorage.removeItem('token');
-            window.location.href = 'index.html';
-            return;
-          }
-      
-          if (!res.ok) {
-            const errorData = await res.json();
-            throw new Error(errorData.message || 'Failed to save note.');
-          }
-      
-          noteTitle.value = '';
-          noteDesc.value = '';
-          noteModal.classList.add('hidden');
-          loadNotes(); // Reload notes
-      
-        } catch (err) {
-          console.error('Failed to save note:', err);
-          alert('Error saving note: ' + err.message);
-        }
-      });
+// Event listener for saving a new note (modal)
+saveNote.addEventListener('click', async () => {
+  const title = noteTitle.value.trim();
+  const desc = noteDesc.value.trim();
+  if (!title || !desc) return alert('Please fill in all fields.');
+
+  try {
+    const res = await fetch(`${apiUrl}/notes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ title, content: desc }) // Ensure backend expects 'content' or change to 'desc'
+    });
+
+    if (res.status === 401 || res.status === 403) {
+      localStorage.removeItem('token');
+      window.location.href = 'index.html';
+      return;
+    }
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || 'Failed to save note.');
+    }
+
+    noteTitle.value = '';
+    noteDesc.value = '';
+    noteModal.classList.add('hidden');
+    loadNotes(); // Reload notes
+  } catch (err) {
+    console.error('Failed to save note:', err);
+    alert('Error saving note: ' + err.message);
+  }
+});
