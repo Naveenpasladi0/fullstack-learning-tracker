@@ -188,11 +188,6 @@ async function loadNotes() {
   }
 }
 
-      // Add 'pinned-note' class if the note is pinned for optional styling
-      notes.forEach(note => {
-        console.log(note.title); 
-      });
-
       if (currentlyEditingId === note._id) {
         // Render in editing mode
         noteEl.innerHTML = `
